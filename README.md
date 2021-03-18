@@ -6,7 +6,7 @@ Se script vous donne la maniabilité d'installer un serveur OpenVPN sans problè
 ### Installation
 Utiliser cette commande pour installer le serveur OpenVPN sur votre machine:
 
-`wget https://share.zariaa.tk/s/openvpn-installer.sh && bash openvpn-installer.sh`
+`wget https://raw.githubusercontent.com/Zariaa27/openvpn-install/master/openvpn-install.sh && bash openvpn-installer.sh`
 
 Quand il se termine, vous pouvez utiliser la même commande pour ajouter um utilisateur, supprimer un utilisateur ou bien désinstaller OpenVPN de votre machine.
 
