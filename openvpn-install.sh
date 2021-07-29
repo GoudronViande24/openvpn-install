@@ -50,12 +50,12 @@ if [[ "$os" == "ubuntu" && "$os_version" -lt 1804 ]]; then
 fi
 
 if [[ "$os" == "debian" && "$os_version" -lt 9 ]]; then
-	echo "Debian 9 ou plus doit être utiliser pour avoir accès à cet installateur."
+	echo "Debian 9 ou plus doit être utilisé pour avoir accès à cet installateur."
 	exit
 fi
 
 if [[ "$os" == "centos" && "$os_version" -lt 7 ]]; then
-	echo "CentOS 7 ou plus doit être utiliser pour avoir accès à cet installateur."
+	echo "CentOS 7 ou plus doit être utilisé pour avoir accès à cet installateur."
 	exit
 fi
 
@@ -66,12 +66,12 @@ if ! grep -q sbin <<< "$PATH"; then
 fi
 
 if [[ "$EUID" -ne 0 ]]; then
-	echo "Cet installateur doit avoir été utiliser par un super utilisateur, ajouter sudo avant votre commande."
+	echo "Cet installateur doit être utilisé par un super utilisateur, ajoutez sudo avant votre commande."
 	exit
 fi
 
 if [[ ! -e /dev/net/tun ]] || ! ( exec 7<>/dev/net/tun ) 2>/dev/null; then
-	echo "La compatibilité TUN doit être activer pour utiliser cet installateur."
+	echo "La compatibilité TUN doit être activée pour utiliser cet installateur."
 	exit
 fi
 
@@ -147,7 +147,7 @@ if [[ ! -e /etc/openvpn/server/server.conf ]]; then
 	fi
 	echo
 	echo "Quel protocol voulez vous utiliser?"
-	echo "   1) UDP (recommander par la communauté)"
+	echo "   1) UDP (recommandé par la communauté)"
 	echo "   2) TCP"
 	read -p "Protocol [1]: " protocol
 	until [[ -z "$protocol" || "$protocol" =~ ^[12]$ ]]; do
@@ -163,7 +163,7 @@ if [[ ! -e /etc/openvpn/server/server.conf ]]; then
 		;;
 	esac
 	echo
-	echo "Quel port devrait OpenVPN utiliser? (1. soyez sûr d\'avoir accès au port spécifié. 2. Si vous utiliser un firewall, Q)"
+	echo "Quel port OpenVPN doit utiliser? (1. soyez sûr d\'avoir accès au port spécifié. 2. Si vous utiliser un firewall, Q)"
 	read -p "Port [1194]: " port
 	until [[ -z "$port" || "$port" =~ ^[0-9]+$ && "$port" -le 65535 ]]; do
 		echo "$port: port invalide."
@@ -171,13 +171,13 @@ if [[ ! -e /etc/openvpn/server/server.conf ]]; then
 	done
 	[[ -z "$port" ]] && port="1194"
 	echo
-	echo "Quel serveur DNS souhaitez vous utiliser:"
+	echo "Quel serveur DNS souhaitez-vous utiliser:"
 	echo "   1) Configuration par défaut"
-	echo "   2) Google"
-	echo "   3) 1.1.1.1"
-	echo "   4) OpenDNS"
-	echo "   5) Quad9"
-	echo "   6) AdGuard"
+	echo "   2) Google (8.8.8.8)"
+	echo "   3) Cloudflare (1.1.1.1)"
+	echo "   4) OpenDNS (208.67.222.222)"
+	echo "   5) Quad9 (9.9.9.9)"
+	echo "   6) AdGuard (94.140.14.14)"
 	read -p "DNS server [1]: " dns
 	until [[ -z "$dns" || "$dns" =~ ^[1-6]$ ]]; do
 		echo "$dns: sélection invalide."
@@ -420,13 +420,13 @@ verb 3" > /etc/openvpn/server/client-common.txt
 	# Generates the custom client.ovpn
 	new_client
 	echo
-	echo "Installation terminé!"
+	echo "Installation terminée!"
 	echo
-	echo "La configuration généré pendant l'installation est disponible ici:" ~/"$client.ovpn"
-	echo "De nouveau utilisateurs peuvent êtres ajouter en utilisant la commande fournis dans la documentation."
+	echo "La configuration générée pendant l'installation est disponible ici:" ~/"$client.ovpn"
+	echo "De nouveaux utilisateurs peuvent être ajoutés en utilisant la commande fournie dans la documentation."
 else
 	clear
-	echo "OpenVPN est déjà installer."
+	echo "OpenVPN est déjà installé."
 	echo
 	echo "Choisisez une option:"
 	echo "   1) Ajouter un utilisateur"
@@ -441,7 +441,7 @@ else
 	case "$option" in
 		1)
 			echo
-			echo "Entré le nom d'utilisateur:"
+			echo "Entrer le nom d'utilisateur:"
 			read -p "Name: " unsanitized_client
 			client=$(sed 's/[^0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-]/_/g' <<< "$unsanitized_client")
 			while [[ -z "$client" || -e /etc/openvpn/server/easy-rsa/pki/issued/"$client".crt ]]; do
@@ -463,11 +463,11 @@ else
 			number_of_clients=$(tail -n +2 /etc/openvpn/server/easy-rsa/pki/index.txt | grep -c "^V")
 			if [[ "$number_of_clients" = 0 ]]; then
 				echo
-				echo "Aucun utilisateurs sont disponibles!"
+				echo "Aucun utilisateur n'est disponible!"
 				exit
 			fi
 			echo
-			echo "Sélectionné l'utilisateur a supprimer:"
+			echo "Sélectionner l'utilisateur à supprimer:"
 			tail -n +2 /etc/openvpn/server/easy-rsa/pki/index.txt | grep "^V" | cut -d '=' -f 2 | nl -s ') '
 			read -p "Client: " client_number
 			until [[ "$client_number" =~ ^[0-9]+$ && "$client_number" -le "$number_of_clients" ]]; do
@@ -476,7 +476,7 @@ else
 			done
 			client=$(tail -n +2 /etc/openvpn/server/easy-rsa/pki/index.txt | grep "^V" | cut -d '=' -f 2 | sed -n "$client_number"p)
 			echo
-			read -p "Confirmé la suppresion de: $client? [y/N]: " revoke
+			read -p "Confirmer la suppresion de: $client? [y/N]: " revoke
 			until [[ "$revoke" =~ ^[yYnN]*$ ]]; do
 				echo "$revoke: sélection invalide."
 				read -p "Confirmé la suppresion de: $client? [y/N]: " revoke
@@ -493,16 +493,16 @@ else
 				echo "$client supprimé!"
 			else
 				echo
-				echo "$client supprésion amortis!"
+				echo "La suppression de $client a été annulée."
 			fi
 			exit
 		;;
 		3)
 			echo
-			read -p "Confirmé la suppression d'OpenVPN? [y/N]: " remove
+			read -p "Confirmer la suppression d'OpenVPN? [y/N]: " remove
 			until [[ "$remove" =~ ^[yYnN]*$ ]]; do
 				echo "$remove: sélection invalide."
-				read -p "Confirmé la suppression d'OpenVPN? [y/N]: " remove
+				read -p "Confirmer la suppression d'OpenVPN? [y/N]: " remove
 			done
 			if [[ "$remove" =~ ^[yY]$ ]]; then
 				port=$(grep '^port ' /etc/openvpn/server/server.conf | cut -d " " -f 2)
@@ -544,7 +544,7 @@ else
 				echo "OpenVPN supprimé!"
 			else
 				echo
-				echo "Suppresion d'OpenVPN amortis!"
+				echo "Suppresion d'OpenVPN annulée."
 			fi
 			exit
 		;;
